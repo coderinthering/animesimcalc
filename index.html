@@ -200,6 +200,9 @@
   <div>
     <label><input type="checkbox" id="doubleSword"> 2x Weapon Gamepass</label>
   </div>
+      <div style="margin-top: 10px;">
+  <label><input type="checkbox" id="eventBoost"> Event Boost (e.g. 5x)</label>
+</div>
 </div>
 
     <button onclick="calculateGains()">Calculate</button>
@@ -282,12 +285,21 @@
   const has2xEnergy = document.getElementById("doubleEnergy").checked;
   const has2xDefense = document.getElementById("doubleDefense").checked;
   const has2xSword = document.getElementById("doubleSword").checked;
+  const hasEventBoost = document.getElementById("eventBoost").checked;
+
 
   // Apply 2x multipliers
   if (has2xStrength) strengthMultiplier *= 2;
   if (has2xEnergy) energyMultiplier *= 2;
   if (has2xDefense) defenseMultiplier *= 2;
   if (has2xSword) swordMultiplier *= 2;
+  if (hasEventBoost) {
+  strengthGain *= 5;
+  energyGain *= 5;
+  defenseGain *= 5;
+  swordGain *= 5;
+}
+
 
   const baseStrength = 55;
   const baseEnergy = 28;
@@ -308,12 +320,14 @@
   swordGain *= effectiveBoost;
 
   document.getElementById("result").innerHTML = `
-    <p><strong>Training Area:</strong> ${area.name} (x${effectiveBoost})</p>
-    <p><strong>Strength Gain:</strong> ${abbreviateNumber(strengthGain)}</p>
-    <p><strong>Energy Gain:</strong> ${abbreviateNumber(energyGain)}</p>
-    <p><strong>Defense Gain:</strong> ${abbreviateNumber(defenseGain)}</p>
-    <p><strong>Sword Gain:</strong> ${abbreviateNumber(swordGain)}</p>
-  `;
+  <p><strong>Training Area:</strong> ${area.name} (x${effectiveBoost})</p>
+  ${hasEventBoost ? `<p><strong>Event Boost Applied:</strong> x5</p>` : ""}
+  <p><strong>Strength Gain:</strong> ${abbreviateNumber(strengthGain)}</p>
+  <p><strong>Energy Gain:</strong> ${abbreviateNumber(energyGain)}</p>
+  <p><strong>Defense Gain:</strong> ${abbreviateNumber(defenseGain)}</p>
+  <p><strong>Sword Gain:</strong> ${abbreviateNumber(swordGain)}</p>
+`;
+
 }
 
   </script>
