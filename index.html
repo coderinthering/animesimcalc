@@ -293,12 +293,7 @@
   if (has2xEnergy) energyMultiplier *= 2;
   if (has2xDefense) defenseMultiplier *= 2;
   if (has2xSword) swordMultiplier *= 2;
-  if (hasEventBoost) {
-  strengthGain *= 5;
-  energyGain *= 5;
-  defenseGain *= 5;
-  swordGain *= 5;
-}
+  
 
 
   const baseStrength = 55;
@@ -318,6 +313,13 @@
   energyGain *= effectiveBoost;
   defenseGain *= effectiveBoost;
   swordGain *= effectiveBoost;
+
+  if (hasEventBoost) {
+  strengthGain *= 5;
+  energyGain *= 5;
+  defenseGain *= 5;
+  swordGain *= 5;
+}
 
   document.getElementById("result").innerHTML = `
   <p><strong>Training Area:</strong> ${area.name} (x${effectiveBoost})</p>
