@@ -203,12 +203,18 @@
       <div style="margin-top: 10px;">
   <label><input type="checkbox" id="eventBoost"> Event Boost (5x)</label>
 </div>
+      <div class="form-group">
+        <label for="currentStat">Current Highest Stat:</label>
+        <input type="number" id="currentStat" placeholder="e.g. 1e15" required>
+      </div>
 </div>
 
     <button onclick="calculateGains()">Calculate</button>
 
     <div class="result" id="result"></div>
   </div>
+
+  <!-- Your existing HTML structure stays the same -->
 
   <script>
     const trainingAreas = [
@@ -235,7 +241,6 @@
       { name: "x2.5B Area", boost: 2500000000, required: 1000000000000000000000000000 },
       { name: "x10B Area", boost: 10000000000, required: 100000000000000000000000000000 }
     ];
-
 
     const areaSelect = document.getElementById("trainingArea");
     trainingAreas.forEach((area, index) => {
@@ -267,71 +272,74 @@
     }
 
     function calculateGains() {
-  const time = parseInt(document.getElementById("time").value);
-  let strengthMultiplier = parseInt(document.getElementById("strengthMultiplier").value);
-  let energyMultiplier = parseInt(document.getElementById("energyMultiplier").value);
-  let defenseMultiplier = parseInt(document.getElementById("defenseMultiplier").value);
-  let swordMultiplier = parseInt(document.getElementById("swordMultiplier").value);
-  const areaIndex = parseInt(document.getElementById("trainingArea").value);
-  const area = trainingAreas[areaIndex];
+      const time = parseInt(document.getElementById("time").value);
+      let strengthMultiplier = parseInt(document.getElementById("strengthMultiplier").value);
+      let energyMultiplier = parseInt(document.getElementById("energyMultiplier").value);
+      let defenseMultiplier = parseInt(document.getElementById("defenseMultiplier").value);
+      let swordMultiplier = parseInt(document.getElementById("swordMultiplier").value);
+      const currentStat = parseFloat(document.getElementById("currentStat").value); // NEW
+      const areaIndex = parseInt(document.getElementById("trainingArea").value);
+      const area = trainingAreas[areaIndex];
 
-  if (isNaN(time) || isNaN(strengthMultiplier) || isNaN(energyMultiplier) || isNaN(defenseMultiplier) || isNaN(swordMultiplier)) {
-    document.getElementById("result").innerHTML = `<p>Please fill out all fields with valid numbers.</p>`;
-    return;
-  }
+      if (
+        isNaN(time) || isNaN(strengthMultiplier) || isNaN(energyMultiplier) ||
+        isNaN(defenseMultiplier) || isNaN(swordMultiplier) || isNaN(currentStat)
+      ) {
+        document.getElementById("result").innerHTML = `<p>Please fill out all fields with valid numbers.</p>`;
+        return;
+      }
 
-  // Gamepass checkboxes
-  const has2xStrength = document.getElementById("doubleStrength").checked;
-  const has2xEnergy = document.getElementById("doubleEnergy").checked;
-  const has2xDefense = document.getElementById("doubleDefense").checked;
-  const has2xSword = document.getElementById("doubleSword").checked;
-  const hasEventBoost = document.getElementById("eventBoost").checked;
+      // Gamepass checkboxes
+      const has2xStrength = document.getElementById("doubleStrength").checked;
+      const has2xEnergy = document.getElementById("doubleEnergy").checked;
+      const has2xDefense = document.getElementById("doubleDefense").checked;
+      const has2xSword = document.getElementById("doubleSword").checked;
+      const hasEventBoost = document.getElementById("eventBoost").checked;
 
+      // Apply 2x multipliers
+      if (has2xStrength) strengthMultiplier *= 2;
+      if (has2xEnergy) energyMultiplier *= 2;
+      if (has2xDefense) defenseMultiplier *= 2;
+      if (has2xSword) swordMultiplier *= 2;
 
-  // Apply 2x multipliers
-  if (has2xStrength) strengthMultiplier *= 2;
-  if (has2xEnergy) energyMultiplier *= 2;
-  if (has2xDefense) defenseMultiplier *= 2;
-  if (has2xSword) swordMultiplier *= 2;
-  
+      // Base ticks per minute
+      const baseStrength = 55;
+      const baseEnergy = 28;
+      const baseDefense = 36;
+      const baseSword = 55;
 
+      // Calculate gains
+      let strengthGain = baseStrength * strengthMultiplier * time;
+      let energyGain = baseEnergy * energyMultiplier * time;
+      let defenseGain = baseDefense * defenseMultiplier * time;
+      let swordGain = baseSword * swordMultiplier * time;
 
-  const baseStrength = 55;
-  const baseEnergy = 28;
-  const baseDefense = 36;
-  const baseSword = 55;
+      // ✅ Use current stat to determine training area boost eligibility
+      const effectiveBoost = currentStat >= area.required ? area.boost : 1;
 
-  let strengthGain = baseStrength * strengthMultiplier * time;
-  let energyGain = baseEnergy * energyMultiplier * time;
-  let defenseGain = baseDefense * defenseMultiplier * time;
-  let swordGain = baseSword * swordMultiplier * time;
+      // Apply area boost
+      strengthGain *= effectiveBoost;
+      energyGain *= effectiveBoost;
+      defenseGain *= effectiveBoost;
+      swordGain *= effectiveBoost;
 
-  const highestStat = Math.max(strengthGain, energyGain, defenseGain, swordGain);
-  const effectiveBoost = highestStat >= area.required ? area.boost : 1;
+      // Apply event boost
+      if (hasEventBoost) {
+        strengthGain *= 5;
+        energyGain *= 5;
+        defenseGain *= 5;
+        swordGain *= 5;
+      }
 
-  strengthGain *= effectiveBoost;
-  energyGain *= effectiveBoost;
-  defenseGain *= effectiveBoost;
-  swordGain *= effectiveBoost;
-
-  if (hasEventBoost) {
-  strengthGain *= 5;
-  energyGain *= 5;
-  defenseGain *= 5;
-  swordGain *= 5;
-}
-
-  document.getElementById("result").innerHTML = `
-  <p><strong>Training Area:</strong> ${area.name} (x${effectiveBoost})</p>
-  ${hasEventBoost ? `<p><strong>Event Boost Applied:</strong> x5</p>` : ""}
-  <p><strong>Strength Gain:</strong> ${abbreviateNumber(strengthGain)}</p>
-  <p><strong>Energy Gain:</strong> ${abbreviateNumber(energyGain)}</p>
-  <p><strong>Defense Gain:</strong> ${abbreviateNumber(defenseGain)}</p>
-  <p><strong>Sword Gain:</strong> ${abbreviateNumber(swordGain)}</p>
-`;
-
-}
-
+      document.getElementById("result").innerHTML = `
+        <p><strong>Training Area:</strong> ${area.name} (x${effectiveBoost})</p>
+        ${hasEventBoost ? `<p><strong>Event Boost Applied:</strong> x5</p>` : ""}
+        <p><strong>Strength Gain:</strong> ${abbreviateNumber(strengthGain)}</p>
+        <p><strong>Energy Gain:</strong> ${abbreviateNumber(energyGain)}</p>
+        <p><strong>Defense Gain:</strong> ${abbreviateNumber(defenseGain)}</p>
+        <p><strong>Sword Gain:</strong> ${abbreviateNumber(swordGain)}</p>
+      `;
+    }
   </script>
 </body>
 
