@@ -284,14 +284,14 @@
       defenseGain *= effectiveBoost;
       swordGain *= effectiveBoost;
 
-      document.getElementById("result").innerHTML = `
+      document.getElementById("result").innerHTML = 
         <p><strong>Training Area:</strong> ${area.name} (x${effectiveBoost})</p>
         <p><strong>Strength Gain:</strong> ${abbreviateNumber(strengthGain)}</p>
         <p><strong>Energy Gain:</strong> ${abbreviateNumber(energyGain)}</p>
         <p><strong>Defense Gain:</strong> ${abbreviateNumber(defenseGain)}</p>
         <p><strong>Sword Gain:</strong> ${abbreviateNumber(swordGain)}</p>
 
-        function calculateGains() {
+      function calculateGains() {
   const time = parseInt(document.getElementById("time").value);
   let strengthMultiplier = parseInt(document.getElementById("strengthMultiplier").value);
   let energyMultiplier = parseInt(document.getElementById("energyMultiplier").value);
@@ -335,6 +335,11 @@
     <p><strong>Energy Gain:</strong> ${abbreviateNumber(energyGain)}</p>
     <p><strong>Defense Gain:</strong> ${abbreviateNumber(defenseGain)}</p>
     <p><strong>Sword Gain:</strong> ${abbreviateNumber(swordGain)}</p>
+  `;
+}
+
+
+
       `;
     }
   </script>
