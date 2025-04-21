@@ -238,10 +238,13 @@
       const coinsPerMinute = selectedRank.coinPerMinute * (doubleCoins ? 2 : 1);
       const totalCoins = coinsPerMinute * time;
 
+      const formattedCoinsPerMinute = coinsPerMinute.toLocaleString();
+      const formattedTotalCoins = totalCoins.toLocaleString();
+
       document.getElementById("result").innerHTML = `
         <p><strong>Rank:</strong> ${selectedRank.name}</p>
-        <p><strong>Coins Per Minute:</strong> ${selectedRank.coinPerMinute} (x${doubleCoins ? '2' : '1'} multiplier)</p>
-        <p><strong>Total Coins Earned in ${time} minutes:</strong> ${totalCoins}</p>
+        <p><strong>Coins Per Minute:</strong> ${formattedCoinsPerMinute} (x${doubleCoins ? '2' : '1'} multiplier)</p>
+        <p><strong>Total Coins Earned in ${time} minutes:</strong> ${formattedTotalCoins}</p>
       `;
     }
   </script>
