@@ -188,6 +188,13 @@
       <label for="trainingArea">Training Area:</label>
       <select id="trainingArea"></select>
     </div>
+    <div class="form-group" style="grid-template-columns: 1fr 1fr;">
+      <label><input type="checkbox" id="doubleStrength"> 2x Strength Gamepass</label>
+      <label><input type="checkbox" id="doubleEnergy"> 2x Energy Gamepass</label>
+      <label><input type="checkbox" id="doubleDefense"> 2x Defense Gamepass</label>
+      <label><input type="checkbox" id="doubleSword"> 2x Weapon Gamepass</label>
+    </div>
+
 
     <button onclick="calculateGains()">Calculate</button>
 
@@ -283,6 +290,51 @@
         <p><strong>Energy Gain:</strong> ${abbreviateNumber(energyGain)}</p>
         <p><strong>Defense Gain:</strong> ${abbreviateNumber(defenseGain)}</p>
         <p><strong>Sword Gain:</strong> ${abbreviateNumber(swordGain)}</p>
+
+        function calculateGains() {
+  const time = parseInt(document.getElementById("time").value);
+  let strengthMultiplier = parseInt(document.getElementById("strengthMultiplier").value);
+  let energyMultiplier = parseInt(document.getElementById("energyMultiplier").value);
+  let defenseMultiplier = parseInt(document.getElementById("defenseMultiplier").value);
+  let swordMultiplier = parseInt(document.getElementById("swordMultiplier").value);
+  const area = trainingAreas[parseInt(areaSelect.value)];
+
+  // Gamepass checkboxes
+  const has2xStrength = document.getElementById("doubleStrength").checked;
+  const has2xEnergy = document.getElementById("doubleEnergy").checked;
+  const has2xDefense = document.getElementById("doubleDefense").checked;
+  const has2xSword = document.getElementById("doubleSword").checked;
+
+  // Apply gamepass multipliers
+  if (has2xStrength) strengthMultiplier *= 2;
+  if (has2xEnergy) energyMultiplier *= 2;
+  if (has2xDefense) defenseMultiplier *= 2;
+  if (has2xSword) swordMultiplier *= 2;
+
+  const baseStrength = 55;
+  const baseEnergy = 28;
+  const baseDefense = 36;
+  const baseSword = 55;
+
+  let strengthGain = baseStrength * strengthMultiplier * time;
+  let energyGain = baseEnergy * energyMultiplier * time;
+  let defenseGain = baseDefense * defenseMultiplier * time;
+  let swordGain = baseSword * swordMultiplier * time;
+
+  const highestStat = Math.max(strengthGain, energyGain, defenseGain, swordGain);
+  const effectiveBoost = highestStat >= area.required ? area.boost : 1;
+
+  strengthGain *= effectiveBoost;
+  energyGain *= effectiveBoost;
+  defenseGain *= effectiveBoost;
+  swordGain *= effectiveBoost;
+
+  document.getElementById("result").innerHTML = `
+    <p><strong>Training Area:</strong> ${area.name} (x${effectiveBoost})</p>
+    <p><strong>Strength Gain:</strong> ${abbreviateNumber(strengthGain)}</p>
+    <p><strong>Energy Gain:</strong> ${abbreviateNumber(energyGain)}</p>
+    <p><strong>Defense Gain:</strong> ${abbreviateNumber(defenseGain)}</p>
+    <p><strong>Sword Gain:</strong> ${abbreviateNumber(swordGain)}</p>
       `;
     }
   </script>
