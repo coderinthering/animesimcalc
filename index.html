@@ -188,12 +188,13 @@
       <label for="trainingArea">Training Area:</label>
       <select id="trainingArea"></select>
     </div>
-    <div class="form-group" style="grid-template-columns: 1fr 1fr;">
-      <label><input type="checkbox" id="doubleStrength"> 2x Strength Gamepass</label>
-      <label><input type="checkbox" id="doubleEnergy"> 2x Energy Gamepass</label>
-      <label><input type="checkbox" id="doubleDefense"> 2x Defense Gamepass</label>
-      <label><input type="checkbox" id="doubleSword"> 2x Weapon Gamepass</label>
-    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
+  <label><input type="checkbox" id="doubleStrength"> 2x Strength Gamepass</label>
+  <label><input type="checkbox" id="doubleEnergy"> 2x Energy Gamepass</label>
+  <label><input type="checkbox" id="doubleDefense"> 2x Defense Gamepass</label>
+  <label><input type="checkbox" id="doubleSword"> 2x Weapon Gamepass</label>
+</div>
+
 
 
     <button onclick="calculateGains()">Calculate</button>
