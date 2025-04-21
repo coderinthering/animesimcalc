@@ -1,1 +1,291 @@
 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stats Multiplier Calculator</title>
+
+  <style>
+    body {
+      font-family: 'Oxanium', sans-serif;
+      background: linear-gradient(145deg, #0f0f0f, #1a1a1d);
+      margin: 0;
+      padding: 20px;
+      color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: #222228;
+      width: 100%;
+      padding: 15px 20px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0, 200, 255, 0.2);
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .navbar a {
+      color: #00c3ff;
+      font-size: 18px;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .navbar a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      background: #1b1b1f;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(0, 200, 255, 0.15);
+      max-width: 700px;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, #00c3ff, #ff1b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: #cccccc;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    label {
+      font-size: 14px;
+      text-align: right;
+      color: #bbbbbb;
+      padding-right: 10px;
+    }
+
+    input,
+    select {
+      background-color: #292933;
+      border: 1px solid #444;
+      color: #f0f0f0;
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 8px;
+      width: 100%;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #00c3ff;
+      box-shadow: 0 0 8px rgba(0, 200, 255, 0.3);
+      outline: none;
+    }
+
+    button {
+      background: linear-gradient(135deg, #00c3ff, #ff1b6b);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 27, 107, 0.4);
+    }
+
+    .result {
+      margin-top: 30px;
+      background-color: #222228;
+      border-left: 5px solid #00c3ff;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(0, 195, 255, 0.1);
+    }
+
+    .result p {
+      margin: 10px 0;
+    }
+
+    @media (max-width: 600px) {
+      .form-group {
+        grid-template-columns: 1fr;
+        text-align: left;
+      }
+
+      label {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="index2.html">Coin Calculator</a>
+  </div>
+
+  <div class="container">
+    <img src="image1.png" alt="Anime Simulator Logo" style="max-width: 140px; display: block; margin: 0 auto 25px; filter: drop-shadow(0 0 10px #00c3ff);" />
+
+    <h1>Stats Multiplier Calculator</h1>
+    <p>Enter your training time, stat multipliers, and select a training area (if eligible).</p>
+
+    <div class="form-group">
+      <label for="time">Time (minutes):</label>
+      <input type="number" id="time" placeholder="e.g. 60" required>
+    </div>
+
+    <div class="form-group">
+      <label for="strengthMultiplier">Strength Multiplier:</label>
+      <input type="number" id="strengthMultiplier" min="2" max="2000000" value="2">
+    </div>
+
+    <div class="form-group">
+      <label for="energyMultiplier">Energy Multiplier:</label>
+      <input type="number" id="energyMultiplier" min="2" max="2000000" value="2">
+    </div>
+
+    <div class="form-group">
+      <label for="defenseMultiplier">Defense Multiplier:</label>
+      <input type="number" id="defenseMultiplier" min="2" max="2000000" value="2">
+    </div>
+
+    <div class="form-group">
+      <label for="swordMultiplier">Sword Multiplier:</label>
+      <input type="number" id="swordMultiplier" min="2" max="2000000" value="2">
+    </div>
+
+    <div class="form-group">
+      <label for="trainingArea">Training Area:</label>
+      <select id="trainingArea"></select>
+    </div>
+
+    <button onclick="calculateGains()">Calculate</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const trainingAreas = [
+      { name: "None", boost: 1, required: 0 },
+      { name: "x5 Area", boost: 5, required: 500 },
+      { name: "x15 Area", boost: 15, required: 10000 },
+      { name: "x50 Area", boost: 50, required: 100000 },
+      { name: "x100 Area", boost: 100, required: 1000000 },
+      { name: "x500 Area", boost: 500, required: 10000000 },
+      { name: "x1000 Area", boost: 1000, required: 100000000 },
+      { name: "x2500 Area", boost: 2500, required: 1000000000 },
+      { name: "x5000 Area", boost: 5000, required: 10000000000 },
+      { name: "x10000 Area", boost: 10000, required: 100000000000 },
+      { name: "x25000 Area", boost: 25000, required: 1000000000000 },
+      { name: "x100000 Area", boost: 100000, required: 100000000000000 },
+      { name: "x250000 Area", boost: 250000, required: 1000000000000000 },
+      { name: "x1M Area", boost: 1000000, required: 100000000000000000 },
+      { name: "x2.5M Area", boost: 2500000, required: 1000000000000000000 },
+      { name: "x10M Area", boost: 10000000, required: 100000000000000000000 },
+      { name: "x25M Area", boost: 25000000, required: 1000000000000000000000 },
+      { name: "x100M Area", boost: 100000000, required: 100000000000000000000000 },
+      { name: "x250M Area", boost: 250000000, required: 1000000000000000000000000 },
+      { name: "x1B Area", boost: 1000000000, required: 100000000000000000000000000 },
+      { name: "x2.5B Area", boost: 2500000000, required: 1000000000000000000000000000 },
+      { name: "x10B Area", boost: 10000000000, required: 100000000000000000000000000000 }
+    ];
+
+
+    const areaSelect = document.getElementById("trainingArea");
+    trainingAreas.forEach((area, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.textContent = `${area.name} (Min: ${abbreviateNumber(area.required)})`;
+      areaSelect.appendChild(option);
+    });
+
+    function abbreviateNumber(num) {
+      const units = [
+        { value: 1e27, symbol: "Oc" },
+        { value: 1e24, symbol: "Sp" },
+        { value: 1e21, symbol: "Sx" },
+        { value: 1e18, symbol: "Qn" },
+        { value: 1e15, symbol: "Qd" },
+        { value: 1e12, symbol: "T" },
+        { value: 1e9, symbol: "B" },
+        { value: 1e6, symbol: "M" },
+        { value: 1e3, symbol: "K" }
+      ];
+
+      for (const { value, symbol } of units) {
+        if (num >= value) {
+          return (num / value).toFixed(2) + symbol;
+        }
+      }
+      return num.toString();
+    }
+
+    function calculateGains() {
+      const time = parseInt(document.getElementById("time").value);
+      const strengthMultiplier = parseInt(document.getElementById("strengthMultiplier").value);
+      const energyMultiplier = parseInt(document.getElementById("energyMultiplier").value);
+      const defenseMultiplier = parseInt(document.getElementById("defenseMultiplier").value);
+      const swordMultiplier = parseInt(document.getElementById("swordMultiplier").value);
+      const area = trainingAreas[parseInt(areaSelect.value)];
+
+      const baseStrength = 55;
+      const baseEnergy = 28;
+      const baseDefense = 36;
+      const baseSword = 55;
+
+      let strengthGain = baseStrength * strengthMultiplier * time;
+      let energyGain = baseEnergy * energyMultiplier * time;
+      let defenseGain = baseDefense * defenseMultiplier * time;
+      let swordGain = baseSword * swordMultiplier * time;
+
+      const highestStat = Math.max(strengthGain, energyGain, defenseGain, swordGain);
+
+      const effectiveBoost = highestStat >= area.required ? area.boost : 1;
+
+      strengthGain *= effectiveBoost;
+      energyGain *= effectiveBoost;
+      defenseGain *= effectiveBoost;
+      swordGain *= effectiveBoost;
+
+      document.getElementById("result").innerHTML = `
+        <p><strong>Training Area:</strong> ${area.name} (x${effectiveBoost})</p>
+        <p><strong>Strength Gain:</strong> ${abbreviateNumber(strengthGain)}</p>
+        <p><strong>Energy Gain:</strong> ${abbreviateNumber(energyGain)}</p>
+        <p><strong>Defense Gain:</strong> ${abbreviateNumber(defenseGain)}</p>
+        <p><strong>Sword Gain:</strong> ${abbreviateNumber(swordGain)}</p>
+      `;
+    }
+  </script>
+</body>
+
+</html>
