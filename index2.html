@@ -189,6 +189,11 @@
       <label for="doubleCoins">2x Coins Gamepass:</label>
       <input type="checkbox" id="doubleCoins" />
     </div>
+    <div class="form-group">
+      <label for="goldCompanion">Gold Companion:</label>
+      <input type="checkbox" id="goldCompanion" />
+    </div>
+
 
     <div class="form-group">
       <label for="timeInput">Time (in minutes):</label>
@@ -225,28 +230,38 @@
     ];
 
     function calculateCoins() {
-  const selectedRankIndex = parseInt(document.getElementById("rankSelect").value);
-  const selectedRank = ranks[selectedRankIndex];
-  const doubleCoins = document.getElementById("doubleCoins").checked;
-  const time = parseInt(document.getElementById("timeInput").value);
+      const selectedRankIndex = parseInt(document.getElementById("rankSelect").value);
+      const selectedRank = ranks[selectedRankIndex];
+      const doubleCoins = document.getElementById("doubleCoins").checked;
+      const goldCompanion = document.getElementById("goldCompanion").checked;
+      const time = parseInt(document.getElementById("timeInput").value);
 
-  if (isNaN(time) || time <= 0) {
-    alert("Please enter a valid time.");
-    return;
-  }
+      if (isNaN(time) || time <= 0) {
+        alert("Please enter a valid time.");
+        return;
+      }
 
-  const coinsPerMinute = selectedRank.coinPerMinute * (doubleCoins ? 2 : 1);
-  const totalCoins = coinsPerMinute * time;
+      let coinsPerMinute = selectedRank.coinPerMinute;
 
-  const formattedCoinsPerMinute = coinsPerMinute.toLocaleString();
-  const formattedTotalCoins = totalCoins.toLocaleString();
+      if (doubleCoins) {
+        coinsPerMinute *= 2;
+      }
 
-  document.getElementById("result").innerHTML = `
-    <p><strong>Rank:</strong> ${selectedRank.name}</p>
-    <p><strong>Coins Per Minute:</strong> ${formattedCoinsPerMinute} (x${doubleCoins ? '2' : '1'} multiplier)</p>
-    <p><strong>Total Coins Earned in ${time} minutes:</strong> ${formattedTotalCoins}</p>
-  `;
-}
+      if (goldCompanion) {
+        coinsPerMinute *= 1.2; // Increase by 20%
+      }
+
+      const totalCoins = coinsPerMinute * time;
+
+      const formattedCoinsPerMinute = Math.floor(coinsPerMinute).toLocaleString();
+      const formattedTotalCoins = Math.floor(totalCoins).toLocaleString();
+
+      document.getElementById("result").innerHTML = `
+        <p><strong>Rank:</strong> ${selectedRank.name}</p>
+        <p><strong>Coins Per Minute:</strong> ${formattedCoinsPerMinute} (x${doubleCoins ? '2' : '1'}${goldCompanion ? ' + 20% Gold Companion' : ''})</p>
+        <p><strong>Total Coins Earned in ${time} minutes:</strong> ${formattedTotalCoins}</p>
+      `;
+    }
 
   </script>
 </body>
