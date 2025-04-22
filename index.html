@@ -197,6 +197,8 @@
     <div class="checkbox-group">
       <label><input type="checkbox" id="doubleGamepass"> 2x Gamepass</label>
       <label><input type="checkbox" id="eventBoost"> Event Boost (5x)</label>
+      <label><input type="checkbox" id="personalBoost"> Personal Boost (0.5x)</label>
+
     </div>
 
     <button onclick="calculateGains()">Calculate</button>
@@ -257,41 +259,45 @@
     }
 
     function calculateGains() {
-      const time = parseFloat(document.getElementById("time").value);
-      const multiplier = parseFloat(document.getElementById("multiplier").value);
-      const statType = document.getElementById("statType").value;
-      const currentStat = parseFloat(document.getElementById("currentStat").value);
-      const hasGamepass = document.getElementById("doubleGamepass").checked;
-      const hasEvent = document.getElementById("eventBoost").checked;
+  const time = parseFloat(document.getElementById("time").value);
+  const multiplier = parseFloat(document.getElementById("multiplier").value);
+  const statType = document.getElementById("statType").value;
+  const currentStat = parseFloat(document.getElementById("currentStat").value);
+  const hasGamepass = document.getElementById("doubleGamepass").checked;
+  const hasEvent = document.getElementById("eventBoost").checked;
+  const hasPersonalBoost = document.getElementById("personalBoost").checked;
 
-      if (isNaN(time) || isNaN(multiplier) || isNaN(currentStat)) {
-        document.getElementById("result").innerHTML = `<p>Please fill out all fields with valid numbers.</p>`;
-        return;
-      }
+  if (isNaN(time) || isNaN(multiplier) || isNaN(currentStat)) {
+    document.getElementById("result").innerHTML = `<p>Please fill out all fields with valid numbers.</p>`;
+    return;
+  }
 
-      let totalMultiplier = multiplier;
-      if (hasGamepass) totalMultiplier *= 2;
+  let totalMultiplier = multiplier;
+  if (hasGamepass) totalMultiplier *= 2;
+  if (hasPersonalBoost) totalMultiplier *= 0.5;
 
-      let areaBoost = 1;
-      let areaName = "None";
-      for (let i = trainingAreas.length - 1; i >= 0; i--) {
-        if (currentStat >= trainingAreas[i].required) {
-          areaBoost = trainingAreas[i].boost;
-          areaName = trainingAreas[i].name;
-          break;
-        }
-      }
-
-      let gain = baseRates[statType] * totalMultiplier * time * areaBoost;
-      if (hasEvent) gain *= 5;
-
-      document.getElementById("result").innerHTML = `
-        <p><strong>Training Type:</strong> ${statType.charAt(0).toUpperCase() + statType.slice(1)}</p>
-        <p><strong>Training Area:</strong> ${areaName} (x${areaBoost})</p>
-        ${hasEvent ? `<p><strong>Event Boost Applied:</strong> x5</p>` : ""}
-        <p><strong>Total Gain:</strong> ${abbreviateNumber(gain)}</p>
-      `;
+  let areaBoost = 1;
+  let areaName = "None";
+  for (let i = trainingAreas.length - 1; i >= 0; i--) {
+    if (currentStat >= trainingAreas[i].required) {
+      areaBoost = trainingAreas[i].boost;
+      areaName = trainingAreas[i].name;
+      break;
     }
+  }
+
+  let gain = baseRates[statType] * totalMultiplier * time * areaBoost;
+  if (hasEvent) gain *= 5;
+
+  document.getElementById("result").innerHTML = `
+    <p><strong>Training Type:</strong> ${statType.charAt(0).toUpperCase() + statType.slice(1)}</p>
+    <p><strong>Training Area:</strong> ${areaName} (x${areaBoost})</p>
+    ${hasGamepass ? `<p><strong>Gamepass Applied:</strong> x2</p>` : ""}
+    ${hasEvent ? `<p><strong>Event Boost Applied:</strong> x5</p>` : ""}
+    ${hasPersonalBoost ? `<p><strong>Personal Boost Applied:</strong> x0.5</p>` : ""}
+    <p><strong>Total Gain:</strong> ${abbreviateNumber(gain)}</p>
+  `;
+}
   </script>
 </body>
 
